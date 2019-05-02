@@ -14,7 +14,6 @@ pipeline {
         stage('packer validate') {
           agent {
             docker {
-              label 'docker'
               image 'simonmcc/hashicorp-pipeline:latest'
               alwaysPull true
             }
@@ -30,7 +29,6 @@ pipeline {
         stage('terraform fmt') {
           agent { 
             docker { 
-              label 'docker'
               image 'simonmcc/hashicorp-pipeline:latest' 
             } 
           }
