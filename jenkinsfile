@@ -28,7 +28,12 @@ pipeline {
           }
         }
         stage('terraform fmt') {
-          agent { docker { image 'simonmcc/hashicorp-pipeline:latest' } }
+          agent { 
+            docker { 
+              label 'docker'
+              image 'simonmcc/hashicorp-pipeline:latest' 
+            } 
+          }
           steps {
             checkout scm
             sh "terraform fmt -check=true -diff=true"
