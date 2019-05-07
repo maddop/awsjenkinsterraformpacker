@@ -9,9 +9,9 @@
 # Use case: build an ephemeral terraform configuration in CI to test & then destroy
 # Use Case: Maintain default/master safely (how?!?)
 #
-set -e
+#set -e
 # DEBUG
-#set -x
+set -x
 
 THIS_SCRIPT=${BASH_SOURCE[0]:-$0}
 # grumble, moan, PATH, symlinks
