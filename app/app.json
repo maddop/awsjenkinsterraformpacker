@@ -5,7 +5,6 @@
     ],
     "variables": {
       "ami_name": "app",
-      "ami_base": "{{env `AMI_BASE`}}",
       "ami_sha": "{{env `SHA`}}",
       "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
       "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
@@ -15,14 +14,24 @@
         "ami_description": "{{user `ami_name`}} AMI",
         "ami_name": "{{user `ami_name`}} {{timestamp}}",
         "ami_regions": [
-          "us-east-1"
+          "eu-west-1"
         ],
         "instance_type": "t1.micro",
-        "region": "us-east-1",
+        "region": "eu-west-1",
         "run_tags": {
           "ami-create": "{{user `ami_name`}}"
         },
-        "source_ami": "{{user `ami_base`}}",
+  "source_ami_filter": {
+     "filters": {
+       "virtualization-type": "hvm",
+       "architecture": "x86_64",
+       "name": "*baseline-ubuntu-1604*",
+       "block-device-mapping.volume-type": "gp2",
+       "root-device-type": "ebs"
+     },
+     "owners": ["328062375629"],
+     "most_recent": true
+},
         "ssh_username": "ubuntu",
         "subnet_id": "",
         "tags": {

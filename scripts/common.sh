@@ -47,7 +47,7 @@ base_rebuilt () {
 
 extract_artifact_id () {
     local NAME="$1"
-    local AMI="$(cat manifest-$NAME.json | jq '.builds[0].artifact_id' | perl -n -e'/us-east-1:(ami-[a-z0-9]+)/ && print $1')"
+    local AMI="$(cat manifest-$NAME.json | jq '.builds[0].artifact_id' | perl -n -e'/eu-west-1:(ami-[a-z0-9]+)/ && print $1')"
     echo "${AMI}"
 }
 
@@ -111,7 +111,7 @@ generate_terraform_backend() {
     fi
     ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
 
-    if [[ "${AWS_DEFAULT_REGION}" = "us-east-1" ]]; then
+    if [[ "${AWS_DEFAULT_REGION}" = "eu-west-1" ]]; then
         LOCATION_CONSTRAINT=""
     else
 	      LOCATION_CONSTRAINT='--create-bucket-configuration LocationConstraint="${AWS_DEFAULT_REGION}"'

@@ -1,61 +1,72 @@
 {
-  "_readme": [
-    "Ubuntu 16.04 (xenial) LTS",
-    "AMI: amd64 hvm:ebs-ssd",
-    "     see the *_ami variables below for specific names",
-    "base_ami should be latest Ubuntu AMI",
-    "curl -sSL 'https://cloud-images.ubuntu.com/query/xenial/server/released.current.txt' | grep us-east-1 | grep hvm | grep -e 'ebs' | awk '{print $8;}'",
-    ""
-  ],
-  "variables": {
-    "ami_name": "baseline-ubuntu-1604",
-    "ami_base": "ami-a4dc46db",
-    "ami_sha":  "{{env `SHA`}}"
-  },
-  "builders": [
-    {
-      "ami_description": "{{user `ami_name`}} AMI",
-      "ami_name": "{{user `ami_name`}} {{timestamp}}",
-      "ami_regions": [
-        "us-east-1"
-      ],
-      "instance_type": "t1.micro",
-      "region": "us-east-1",
-      "run_tags": {
-        "ami-create": "{{user `ami_name`}}"
-      },
-      "source_ami": "{{user `ami_base`}}",
-      "ssh_username": "ubuntu",
-      "tags": {
-        "OS_Name": "Ubuntu",
-        "OS_Version": "16.04",
-        "SHA": "{{user `ami_sha`}}",
-        "AMI": "{{user `ami_name`}}"
-      },
-      "type": "amazon-ebs"
+    "_readme": [
+        "Ubuntu 16.04 (xenial) LTS",
+        "AMI: amd64 hvm:ebs-ssd",
+        "     see the *_ami variables below for specific names",
+        "base_ami should be latest Ubuntu AMI",
+        "curl -sSL 'https://cloud-images.ubuntu.com/query/xenial/server/released.current.txt' | grep eu-west-1 | grep hvm | grep -e 'ebs' | awk '{print $8;}'",
+        ""
+    ],
+    "builders": [
+        {
+            "ami_description": "{{user `ami_name`}} AMI",
+            "ami_name": "{{user `ami_name`}} {{timestamp}}",
+            "ami_regions": [
+                "eu-west-1"
+            ],
+            "instance_type": "t1.micro",
+            "region": "eu-west-1",
+            "run_tags": {
+                "ami-create": "{{user `ami_name`}}"
+            },
+            "source_ami_filter": {
+                "filters": {
+                    "architecture": "x86_64",
+                    "block-device-mapping.volume-type": "gp2",
+                    "name": "*ubuntu-xenial-16.04-amd64-server-*",
+                    "root-device-type": "ebs",
+                    "virtualization-type": "hvm"
+                },
+                "most_recent": true,
+                "owners": [
+                    "099720109477"
+                ]
+            },
+            "ssh_username": "ubuntu",
+            "tags": {
+                "AMI": "{{user `ami_name`}}",
+                "OS_Name": "Ubuntu",
+                "OS_Version": "16.04",
+                "SHA": "{{user `ami_sha`}}"
+            },
+            "type": "amazon-ebs"
+        }
+    ],
+    "post-processors": [
+        {
+            "output": "manifest-base.json",
+            "strip_path": true,
+            "type": "manifest"
+        }
+    ],
+    "provisioners": [
+        {
+            "inline": [
+                "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done"
+            ],
+            "type": "shell"
+        },
+        {
+            "scripts": [
+                "./base/tasks/baseline.sh",
+                "./base/tasks/cleanup.sh",
+                "./base/tasks/debug.sh"
+            ],
+            "type": "shell"
+        }
+    ],
+    "variables": {
+        "ami_name": "baseline-ubuntu-1604",
+        "ami_sha": "{{env `SHA`}}"
     }
-  ],
-  "post-processors": [
-    {
-      "output": "manifest-base.json",
-      "strip_path": true,
-      "type": "manifest"
-    }
-  ],
-  "provisioners": [
-    {
-      "inline": [
-        "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done"
-      ],
-      "type": "shell"
-    },
-    {
-      "scripts": [
-        "./base/tasks/baseline.sh",
-        "./base/tasks/cleanup.sh",
-        "./base/tasks/debug.sh"
-      ],
-      "type": "shell"
-    }
-  ]
 }
