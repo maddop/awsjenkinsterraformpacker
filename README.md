@@ -3,3 +3,5 @@ Sourced from: https://github.com/jenkins201/packer-terraform-cicd-aws/blob/maste
 Using as a baseline to get to what i need!
 
 AWS Jenkins with Terraform and Packer
+
+updated search ami base details
